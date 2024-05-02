@@ -24,10 +24,38 @@ extern int yylex();
 
 %type <num> expression
 
+%left PLUS MINUS
+%left TIMES DIVIDEDBY
+/* %right */
+/* %nonassoc */
+
 %start program
 
 %%
 
+program
+  : program statement
+  | statement
+  ;
 
+statement
+  : IDENTIFIER EQUALS expression SEMICOLON {
+    hash_insert(symbols, $1, $3);
+    free($1);
+  }
+  ;
+
+expression
+  : LPAREN expression RPAREN { $$ = $2; }
+  | expression PLUS expression { $$ = $1 + $3; }
+  | expression MINUS expression { $$ = $1 - $3; }
+  | expression TIMES expression { $$ = $1 * $3; }
+  | expression DIVIDEDBY expression { $$ = $1 / $3; }
+  | NUMBER { $$ = $1; }
+  | IDENTIFIER {
+    $$ = hash_get(symbols, $1);
+    free($1);
+  }
+  ;
 
 %%

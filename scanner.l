@@ -1,6 +1,8 @@
 %{
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include "parser.h"
 
 int num_ops = 0;
 int num_nums = 0;
@@ -22,22 +24,27 @@ int have_err = 0;
 [ \t\n]*    /* Ignore whitespace. */
 
 [a-z][0-9]? {
-    save_id(yytext);
+    // save_id(yytext);
+    yylval.str = malloc((yyleng + 1) * sizeof(char));
+    strncpy(yylval.str, yytext, yyleng + 1);
+    return IDENTIFIER;
 }
 
 [0-9]+("."[0-9]+)? {
-    num_nums++;
+    // num_nums++;
+    yylval.num = atof(yytext);
+    return NUMBER;
 }
 
-"="     num_ops++;
-"+"     num_ops++;
-"-"     num_ops++;
-"*"     num_ops++;
-"/"     num_ops++;
+"="     return EQUALS;
+"+"     return PLUS;
+"-"     return MINUS;
+"*"     return TIMES;
+"/"     return DIVIDEDBY;
 
-";"     /* Ignore... */
-"("     /* Ignore... */
-")"     /* Ignore... */
+";"     return SEMICOLON;
+"("     return LPAREN;
+")"     return RPAREN;
 
 . {
     have_err = 1;
