@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "parser.h"
+#include "parser-push.h"
 
 int num_ops = 0;
 int num_nums = 0;
@@ -15,8 +15,20 @@ void save_id(char*);
 
 int have_err = 0;
 
+static YYSTYPE yylval;
+static YYLTYPE yylloc;
+extern yypstate* pstate;
+
 #define YY_USER_ACTION \
     yylloc.first_line = yylloc.last_line = yylineno;
+
+#define PUSH_TOKEN(category) do {                               \
+    int s = yypush_parse(pstate, category, &yylval, &yylloc);   \
+    if (s != YYPUSH_MORE) {                                     \
+        yypstate_delete(pstate);                                \
+        return s;                                               \
+    }                                                           \
+} while (0)
 %}
 
 %option noyywrap
@@ -30,24 +42,24 @@ int have_err = 0;
     // save_id(yytext);
     yylval.str = malloc((yyleng + 1) * sizeof(char));
     strncpy(yylval.str, yytext, yyleng + 1);
-    return IDENTIFIER;
+    PUSH_TOKEN(IDENTIFIER);
 }
 
 [0-9]+("."[0-9]+)? {
     // num_nums++;
     yylval.num = atof(yytext);
-    return NUMBER;
+    PUSH_TOKEN(NUMBER);
 }
 
-"="     return EQUALS;
-"+"     return PLUS;
-"-"     return MINUS;
-"*"     return TIMES;
-"/"     return DIVIDEDBY;
+"="     PUSH_TOKEN(EQUALS);
+"+"     PUSH_TOKEN(PLUS);
+"-"     PUSH_TOKEN(MINUS);
+"*"     PUSH_TOKEN(TIMES);
+"/"     PUSH_TOKEN(DIVIDEDBY);
 
-";"     return SEMICOLON;
-"("     return LPAREN;
-")"     return RPAREN;
+";"     PUSH_TOKEN(SEMICOLON);
+"("     PUSH_TOKEN(LPAREN);
+")"     PUSH_TOKEN(RPAREN);
 
 . {
     have_err = 1;
@@ -55,10 +67,9 @@ int have_err = 0;
 }
 
 <<EOF>> {
-    if (have_err) {
-        return 1;
-    }
-    return 0;
+    int s = yypush_parse(pstate, 0, NULL, NULL);
+    yypstate_delete(pstate);
+    return s;
 }
 
 %%

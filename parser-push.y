@@ -3,13 +3,19 @@
 #include <stdlib.h>
 #include <string.h>
 #include "hash.h"
+#include "parser-push.h"
 
 struct hash* symbols;
 
-void yyerror(const char* err);
+yypstate* pstate;
+
+void yyerror(YYLTYPE* loc, const char* err);
 
 extern int yylex();
 %}
+
+%define api.push-pull push
+%define api.pure full
 
 %locations
 %define parse.error verbose
@@ -73,13 +79,14 @@ expression
 
 %%
 
-void yyerror(const char* err) {
+void yyerror(YYLTYPE* loc, const char* err) {
   fprintf(stderr, "Error: %s\n", err);
 }
 
 int main() {
   symbols = hash_create();
-  if(!yyparse()) {
+  pstate = yypstate_new();
+  if(!yylex()) {
     printf("Symbol values:\n");
     struct hash_iter* iter = hash_iter_create(symbols);
     while (hash_iter_has_next(iter)) {

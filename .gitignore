@@ -1,3 +1,7 @@
 *.o
-scanner.c
+scanner*.c
 scanner
+parser*.c
+parser*.h
+parser
+parser-push
