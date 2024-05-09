@@ -24,6 +24,7 @@ extern int yylex();
 %token <num> NUMBER
 %token <str> EQUALS PLUS MINUS TIMES DIVIDEDBY
 %token <str> SEMICOLON LPAREN RPAREN
+%token <str> IF ELSE COLON
 
 %type <num> expression
 
@@ -42,6 +43,11 @@ program
   ;
 
 statement
+  : assignmentStatement
+  | ifStatement
+  ;
+
+assignmentStatement
   : IDENTIFIER EQUALS expression SEMICOLON {
     hash_insert(symbols, $1, $3);
     free($1);
@@ -49,6 +55,16 @@ statement
   | error SEMICOLON {
     fprintf(stderr, "Error: bad statement on line %d\n", @1.first_line);
   }
+  ;
+
+ifStatement
+  : IF expression COLON statement
+  | IF expression COLON closedStatement ELSE COLON statement
+  ;
+
+closedStatement
+  : assignmentStatement
+  | IF expression COLON closedStatement ELSE COLON closedStatement
   ;
 
 expression

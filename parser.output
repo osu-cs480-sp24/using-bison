@@ -1,0 +1,421 @@
+State 29 conflicts: 1 shift/reduce
+
+
+Grammar
+
+    0 $accept: program $end
+
+    1 program: program statement
+    2        | statement
+
+    3 statement: assignmentStatement
+    4          | ifStatement
+
+    5 assignmentStatement: IDENTIFIER EQUALS expression SEMICOLON
+    6                    | error SEMICOLON
+
+    7 ifStatement: IF expression COLON statement
+    8            | IF expression COLON statement ELSE COLON statement
+
+    9 expression: LPAREN expression RPAREN
+   10           | expression PLUS expression
+   11           | expression MINUS expression
+   12           | expression TIMES expression
+   13           | expression DIVIDEDBY expression
+   14           | NUMBER
+   15           | IDENTIFIER
+
+
+Terminals, with rules where they appear
+
+    $end (0) 0
+    error (256) 6
+    IDENTIFIER <str> (258) 5 15
+    NUMBER <num> (259) 14
+    EQUALS <str> (260) 5
+    PLUS <str> (261) 10
+    MINUS <str> (262) 11
+    TIMES <str> (263) 12
+    DIVIDEDBY <str> (264) 13
+    SEMICOLON <str> (265) 5 6
+    LPAREN <str> (266) 9
+    RPAREN <str> (267) 9
+    IF <str> (268) 7 8
+    ELSE <str> (269) 8
+    COLON <str> (270) 7 8
+
+
+Nonterminals, with rules where they appear
+
+    $accept (16)
+        on left: 0
+    program (17)
+        on left: 1 2
+        on right: 0 1
+    statement (18)
+        on left: 3 4
+        on right: 1 2 7 8
+    assignmentStatement (19)
+        on left: 5 6
+        on right: 3
+    ifStatement (20)
+        on left: 7 8
+        on right: 4
+    expression <num> (21)
+        on left: 9 10 11 12 13 14 15
+        on right: 5 7 8 9 10 11 12 13
+
+
+State 0
+
+    0 $accept: • program $end
+
+    error       shift, and go to state 1
+    IDENTIFIER  shift, and go to state 2
+    IF          shift, and go to state 3
+
+    program              go to state 4
+    statement            go to state 5
+    assignmentStatement  go to state 6
+    ifStatement          go to state 7
+
+
+State 1
+
+    6 assignmentStatement: error • SEMICOLON
+
+    SEMICOLON  shift, and go to state 8
+
+
+State 2
+
+    5 assignmentStatement: IDENTIFIER • EQUALS expression SEMICOLON
+
+    EQUALS  shift, and go to state 9
+
+
+State 3
+
+    7 ifStatement: IF • expression COLON statement
+    8            | IF • expression COLON statement ELSE COLON statement
+
+    IDENTIFIER  shift, and go to state 10
+    NUMBER      shift, and go to state 11
+    LPAREN      shift, and go to state 12
+
+    expression  go to state 13
+
+
+State 4
+
+    0 $accept: program • $end
+    1 program: program • statement
+
+    $end        shift, and go to state 14
+    error       shift, and go to state 1
+    IDENTIFIER  shift, and go to state 2
+    IF          shift, and go to state 3
+
+    statement            go to state 15
+    assignmentStatement  go to state 6
+    ifStatement          go to state 7
+
+
+State 5
+
+    2 program: statement •
+
+    $default  reduce using rule 2 (program)
+
+
+State 6
+
+    3 statement: assignmentStatement •
+
+    $default  reduce using rule 3 (statement)
+
+
+State 7
+
+    4 statement: ifStatement •
+
+    $default  reduce using rule 4 (statement)
+
+
+State 8
+
+    6 assignmentStatement: error SEMICOLON •
+
+    $default  reduce using rule 6 (assignmentStatement)
+
+
+State 9
+
+    5 assignmentStatement: IDENTIFIER EQUALS • expression SEMICOLON
+
+    IDENTIFIER  shift, and go to state 10
+    NUMBER      shift, and go to state 11
+    LPAREN      shift, and go to state 12
+
+    expression  go to state 16
+
+
+State 10
+
+   15 expression: IDENTIFIER •
+
+    $default  reduce using rule 15 (expression)
+
+
+State 11
+
+   14 expression: NUMBER •
+
+    $default  reduce using rule 14 (expression)
+
+
+State 12
+
+    9 expression: LPAREN • expression RPAREN
+
+    IDENTIFIER  shift, and go to state 10
+    NUMBER      shift, and go to state 11
+    LPAREN      shift, and go to state 12
+
+    expression  go to state 17
+
+
+State 13
+
+    7 ifStatement: IF expression • COLON statement
+    8            | IF expression • COLON statement ELSE COLON statement
+   10 expression: expression • PLUS expression
+   11           | expression • MINUS expression
+   12           | expression • TIMES expression
+   13           | expression • DIVIDEDBY expression
+
+    PLUS       shift, and go to state 18
+    MINUS      shift, and go to state 19
+    TIMES      shift, and go to state 20
+    DIVIDEDBY  shift, and go to state 21
+    COLON      shift, and go to state 22
+
+
+State 14
+
+    0 $accept: program $end •
+
+    $default  accept
+
+
+State 15
+
+    1 program: program statement •
+
+    $default  reduce using rule 1 (program)
+
+
+State 16
+
+    5 assignmentStatement: IDENTIFIER EQUALS expression • SEMICOLON
+   10 expression: expression • PLUS expression
+   11           | expression • MINUS expression
+   12           | expression • TIMES expression
+   13           | expression • DIVIDEDBY expression
+
+    PLUS       shift, and go to state 18
+    MINUS      shift, and go to state 19
+    TIMES      shift, and go to state 20
+    DIVIDEDBY  shift, and go to state 21
+    SEMICOLON  shift, and go to state 23
+
+
+State 17
+
+    9 expression: LPAREN expression • RPAREN
+   10           | expression • PLUS expression
+   11           | expression • MINUS expression
+   12           | expression • TIMES expression
+   13           | expression • DIVIDEDBY expression
+
+    PLUS       shift, and go to state 18
+    MINUS      shift, and go to state 19
+    TIMES      shift, and go to state 20
+    DIVIDEDBY  shift, and go to state 21
+    RPAREN     shift, and go to state 24
+
+
+State 18
+
+   10 expression: expression PLUS • expression
+
+    IDENTIFIER  shift, and go to state 10
+    NUMBER      shift, and go to state 11
+    LPAREN      shift, and go to state 12
+
+    expression  go to state 25
+
+
+State 19
+
+   11 expression: expression MINUS • expression
+
+    IDENTIFIER  shift, and go to state 10
+    NUMBER      shift, and go to state 11
+    LPAREN      shift, and go to state 12
+
+    expression  go to state 26
+
+
+State 20
+
+   12 expression: expression TIMES • expression
+
+    IDENTIFIER  shift, and go to state 10
+    NUMBER      shift, and go to state 11
+    LPAREN      shift, and go to state 12
+
+    expression  go to state 27
+
+
+State 21
+
+   13 expression: expression DIVIDEDBY • expression
+
+    IDENTIFIER  shift, and go to state 10
+    NUMBER      shift, and go to state 11
+    LPAREN      shift, and go to state 12
+
+    expression  go to state 28
+
+
+State 22
+
+    7 ifStatement: IF expression COLON • statement
+    8            | IF expression COLON • statement ELSE COLON statement
+
+    error       shift, and go to state 1
+    IDENTIFIER  shift, and go to state 2
+    IF          shift, and go to state 3
+
+    statement            go to state 29
+    assignmentStatement  go to state 6
+    ifStatement          go to state 7
+
+
+State 23
+
+    5 assignmentStatement: IDENTIFIER EQUALS expression SEMICOLON •
+
+    $default  reduce using rule 5 (assignmentStatement)
+
+
+State 24
+
+    9 expression: LPAREN expression RPAREN •
+
+    $default  reduce using rule 9 (expression)
+
+
+State 25
+
+   10 expression: expression • PLUS expression
+   10           | expression PLUS expression •
+   11           | expression • MINUS expression
+   12           | expression • TIMES expression
+   13           | expression • DIVIDEDBY expression
+
+    TIMES      shift, and go to state 20
+    DIVIDEDBY  shift, and go to state 21
+
+    $default  reduce using rule 10 (expression)
+
+
+State 26
+
+   10 expression: expression • PLUS expression
+   11           | expression • MINUS expression
+   11           | expression MINUS expression •
+   12           | expression • TIMES expression
+   13           | expression • DIVIDEDBY expression
+
+    TIMES      shift, and go to state 20
+    DIVIDEDBY  shift, and go to state 21
+
+    $default  reduce using rule 11 (expression)
+
+
+State 27
+
+   10 expression: expression • PLUS expression
+   11           | expression • MINUS expression
+   12           | expression • TIMES expression
+   12           | expression TIMES expression •
+   13           | expression • DIVIDEDBY expression
+
+    $default  reduce using rule 12 (expression)
+
+
+State 28
+
+   10 expression: expression • PLUS expression
+   11           | expression • MINUS expression
+   12           | expression • TIMES expression
+   13           | expression • DIVIDEDBY expression
+   13           | expression DIVIDEDBY expression •
+
+    $default  reduce using rule 13 (expression)
+
+
+State 29
+
+    7 ifStatement: IF expression COLON statement •
+    8            | IF expression COLON statement • ELSE COLON statement
+
+    ELSE  shift, and go to state 30
+
+    ELSE      [reduce using rule 7 (ifStatement)]
+    $default  reduce using rule 7 (ifStatement)
+
+    shift/reduce conflict on token ELSE:
+        7 ifStatement: IF expression COLON statement •
+        8 ifStatement: IF expression COLON statement • ELSE COLON statement
+      Example: IF expression COLON IF expression COLON statement • ELSE COLON statement
+      Shift derivation
+        ifStatement
+        ↳ 7: IF expression COLON statement
+                                 ↳ 4: ifStatement
+                                      ↳ 8: IF expression COLON statement • ELSE COLON statement
+      Reduce derivation
+        ifStatement
+        ↳ 8: IF expression COLON statement                                 ELSE COLON statement
+                                 ↳ 4: ifStatement
+                                      ↳ 7: IF expression COLON statement •
+
+
+
+State 30
+
+    8 ifStatement: IF expression COLON statement ELSE • COLON statement
+
+    COLON  shift, and go to state 31
+
+
+State 31
+
+    8 ifStatement: IF expression COLON statement ELSE COLON • statement
+
+    error       shift, and go to state 1
+    IDENTIFIER  shift, and go to state 2
+    IF          shift, and go to state 3
+
+    statement            go to state 32
+    assignmentStatement  go to state 6
+    ifStatement          go to state 7
+
+
+State 32
+
+    8 ifStatement: IF expression COLON statement ELSE COLON statement •
+
+    $default  reduce using rule 8 (ifStatement)
